@@ -6,6 +6,7 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
+use rost::println;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -18,4 +19,9 @@ pub extern "C" fn _start() -> ! {
 fn panic(info: &PanicInfo) -> ! {
     rost::test_panic_handler(info);
     loop {}
+}
+
+#[test_case]
+fn test_println() {
+    println!("test_println output");
 }
