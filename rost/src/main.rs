@@ -4,6 +4,11 @@
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+mod vga_buffer;
+mod serial;
+
+static HELLO: &[u8] = b"Hello World!";
+
 use core::panic::PanicInfo;
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
@@ -12,8 +17,6 @@ fn panic(info: &PanicInfo) -> ! {
     loop {}
 }
 
-mod vga_buffer;
-static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
