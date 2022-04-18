@@ -36,3 +36,10 @@ fn test_runner(tests: &[&dyn Fn()]) {
         test();
     }
 }
+
+#[test_case]
+fn trivial_assertion() {
+    print!("trivial assertion... ");
+    assert_eq!(1,1);
+    println!("[ok]");
+}
