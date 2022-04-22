@@ -38,6 +38,7 @@ impl Writer {
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
+            b'\x08' => self.backspace(),
             byte => {
                 if self.column_position >= BUFFER_WIDTH {
                     self.new_line();
@@ -60,7 +61,7 @@ impl Writer {
         for byte in s.bytes() {
             match byte {
                 // printable bytes
-                0x20..=0x7e | b'\n' => self.write_byte(byte),
+                0x20..=0x7e | b'\n' | 0x08 => self.write_byte(byte),
                 _ => self.write_byte(0xfe),
             }
         }
@@ -75,6 +76,7 @@ impl Writer {
         }
         self.clear_row(BUFFER_HEIGHT - 1);
         self.column_position = 0;
+        handle_commands();
     }
 
     fn clear_row(&mut self, row: usize) {
@@ -84,6 +86,26 @@ impl Writer {
         };
         for col in 0..BUFFER_WIDTH {
             self.buffer.chars[row][col].write(blank);
+        }
+    }
+
+    fn backspace(&mut self) {
+        let blank = ScreenChar {
+            ascii_character: b' ',
+            color_code: self.color_code,
+        };
+        
+        let row = BUFFER_HEIGHT - 1;
+        if self.column_position > 0 {
+            let col = self.column_position - 1;
+            self.buffer.chars[row][col].write(blank);
+            self.column_position -= 1;
+        }
+    }
+
+    fn clear_screen() {
+        for row in 1..BUFFER_HEIGHT {
+            self.clear_row(row);
         }
     }
 }
